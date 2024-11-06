@@ -5,7 +5,7 @@ import { getPopular } from "../api";
 
 export default function Popular() {
     const { isLoading, data: movies } = useQuery<IMovie[]>('popular', getPopular);
-    if (!isLoading) {
+    if (isLoading) {
         return (
             <h1>Loading...</h1>
         )

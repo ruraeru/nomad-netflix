@@ -135,6 +135,9 @@ const Card = styled.div`
   border-radius: 8px;
   overflow-y: auto;
   position: relative;
+  &:-webkit-scrollbar {
+    display: none;
+  }
   margin: 20px;
   background: 
     linear-gradient(
@@ -166,8 +169,8 @@ const CloseBtn = styled.svg`
 `
 
 const ImgContainer = styled.div`
-  width: 100%;
-  height: 60%;
+  /* width: 100%; */
+  /* height: 10%; */
   object-fit: cover;
   position: relative;
   
@@ -184,7 +187,7 @@ const ImgContainer = styled.div`
 
 const MovieImg = styled.img`
   width: 100%;
-  height: 100%;
+  height: min-content;
   object-fit: cover;
 `
 
