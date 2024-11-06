@@ -5,9 +5,10 @@ import { getPopular } from "../api";
 
 export default function Popular() {
     const { isLoading, data: movies } = useQuery<IMovie[]>('popular', getPopular);
-    return (
-        <>
-            {!isLoading && <MovieCards movies={movies} />}
-        </>
-    )
+    if (!isLoading) {
+        return (
+            <h1>Loading...</h1>
+        )
+    }
+    return <MovieCards movies={movies} />
 }

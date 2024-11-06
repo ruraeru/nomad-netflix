@@ -1,24 +1,10 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useQuery } from "react-query";
 import styled from "styled-components";
-import { getMovie, getPopular, makeImagePath } from "../api";
+import { getMovie, makeImagePath } from "../api";
 import { useState } from "react";
 import { IMovie, IMovieDetail } from "../interface/IMovie";
 
-const Wrapper = styled(motion.div)`
-  position: relative;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 50px;
-  text-align: center;
-  padding: 50px;
-`;
-
-const PosterImg = styled(motion.img)`
-  width: 100%;
-  border-radius: 15px;
-  cursor: pointer;
-`;
 const movieWrapperVariants = {
   start: { opacity: 0, scale: 0.5 },
   end: {
@@ -40,8 +26,6 @@ const movieVariants = {
 };
 
 export default function MovieCards({ movies }: { movies: IMovie[] | undefined }) {
-  console.log(movies)
-  // const { isLoading, data: movies } = useQuery<IPopular[]>('popular', getPopular);
   const [movieId, setMovieId] = useState<string | null>(null);
   const { isLoading: movieLoading, data: movieDetail } = useQuery<IMovieDetail>(
     ["movie", movieId],
@@ -116,6 +100,20 @@ export default function MovieCards({ movies }: { movies: IMovie[] | undefined })
   )
 }
 
+const Wrapper = styled(motion.div)`
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 50px;
+  text-align: center;
+  padding: 50px;
+`;
+
+const PosterImg = styled(motion.img)`
+  width: 100%;
+  border-radius: 15px;
+  cursor: pointer;
+`;
 
 const Overlay = styled(motion.div)`
   position: fixed;  
