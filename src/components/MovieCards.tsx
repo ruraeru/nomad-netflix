@@ -106,6 +106,8 @@ const Wrapper = styled(motion.div)`
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 50px;
   text-align: center;
+  
+  margin-top: 50px;
   padding: 50px;
 `;
 
