@@ -1,21 +1,25 @@
 import App from './App';
 import { createBrowserRouter } from 'react-router-dom';
+import ComingSoon from './pages/Comingsoon';
+import Popular from './pages/Popular';
+import NowPlaying from './pages/Nowplaying';
 
 export const router = createBrowserRouter([
     {
         path: '/',
+        element: <App />,
         children: [
             {
                 path: "/",
-                element: <App />
+                element: <Popular />
             },
             {
                 path: 'coming-soon',
-                element: <div>Coming soon</div>,
+                element: <ComingSoon />,
             },
             {
                 path: 'now-playing',
-                element: <div>Now playing</div>,
+                element: <NowPlaying />
             },
         ],
     },
