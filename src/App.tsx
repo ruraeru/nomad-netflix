@@ -1,4 +1,5 @@
 import { color, motion, useAnimation, useMotionValueEvent, useScroll } from 'framer-motion';
+import { useEffect } from 'react';
 import { Link, Outlet, useMatch } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -31,8 +32,6 @@ const Item = styled.li`
     display: flex;
     justify-content: center;
     flex-direction: column;
-    z-index: 999;
-
 `;
 
 const Circle = styled(motion.span)`
@@ -72,6 +71,7 @@ export default function App() {
       navAnimation.start("top")
     }
   });
+
   return (
     <>
       <Nav

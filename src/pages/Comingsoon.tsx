@@ -1,9 +1,9 @@
 import { useQuery } from "react-query";
 import MovieCards from "../components/MovieCards";
-import { getComingSoon } from "../api";
+import { getComingSoon, IGetMoviesResult } from "../api";
 
 export default function ComingSoon() {
-    const { isLoading, data } = useQuery("comingsoon", getComingSoon);
+    const { isLoading, data } = useQuery<IGetMoviesResult>("comingsoon", getComingSoon);
     return (
         <>
             {!isLoading && <MovieCards movies={data} />}

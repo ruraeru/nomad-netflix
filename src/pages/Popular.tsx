@@ -1,10 +1,9 @@
 import { useQuery } from "react-query";
 import MovieCards from "../components/MovieCards";
-import { IMovie } from "../interface/IMovie";
-import { getPopular } from "../api";
+import { getPopular, IGetMoviesResult } from "../api";
 
 export default function Popular() {
-    const { isLoading, data: movies } = useQuery<IMovie[]>('popular', getPopular);
+    const { isLoading, data: movies } = useQuery<IGetMoviesResult>('popular', getPopular);
     if (isLoading) {
         return (
             <h1>Loading...</h1>
