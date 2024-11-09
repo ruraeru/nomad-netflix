@@ -5,6 +5,7 @@ import { ReactQueryDevtools } from "react-query/devtools";
 import { RouterProvider } from 'react-router-dom';
 import { router } from './router';
 import { createGlobalStyle } from 'styled-components';
+import { RecoilRoot } from 'recoil';
 
 const GlobalStyle = createGlobalStyle`
 html, body, div, span, applet, object, iframe,
@@ -67,9 +68,11 @@ const client = new QueryClient();
 root.render(
 	<React.StrictMode>
 		<GlobalStyle />
-		<QueryClientProvider client={client}>
-			<ReactQueryDevtools initialIsOpen={false} />
-			<RouterProvider router={router} />
-		</QueryClientProvider>
+		<RecoilRoot>
+			<QueryClientProvider client={client}>
+				<ReactQueryDevtools initialIsOpen={false} />
+				<RouterProvider router={router} />
+			</QueryClientProvider>
+		</RecoilRoot>
 	</React.StrictMode>
 );
