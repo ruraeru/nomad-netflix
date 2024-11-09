@@ -35,9 +35,15 @@ export default function MovieCards({ movies }: { movies: IMovie[] }) {
 
   return (
     <>
-      <Banner $bgPhoto={makeImagePath(movies[0].backdrop_path)}>
+      <Banner $bgPhoto={makeImagePath(movies[10].backdrop_path)}>
         <Title>{movies[0].title}</Title>
         <Overview>{movies[0].overview.slice(0, 150)}...</Overview>
+        <MoreInfoBtn onClick={() => setMovieId(movies[10].id + "")}>
+          <svg data-slot="icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M6.3 2.84A1.5 1.5 0 0 0 4 4.11v11.78a1.5 1.5 0 0 0 2.3 1.27l9.344-5.891a1.5 1.5 0 0 0 0-2.538L6.3 2.841Z"></path>
+          </svg>
+          자세히 보기
+        </MoreInfoBtn>
       </Banner>
       <Wrapper variants={movieWrapperVariants} initial="start" animate="end">
         {filterMovies?.map((movie) => (
@@ -62,6 +68,7 @@ export default function MovieCards({ movies }: { movies: IMovie[] }) {
 }
 
 const Banner = styled.div<{ $bgPhoto: string }>`
+  width: 100%;
   height: 70vh;
   display: flex;
   flex-direction: column;
@@ -88,6 +95,21 @@ const Overview = styled.p`
   width: 50%;
   @media (max-width: 768px) {
     font-size: 15px;
+  }
+`;
+
+const MoreInfoBtn = styled.button`
+  width: 250px;
+  height: 80px;
+  border-radius: 125px;
+  font-size: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  svg {
+    width: 40px;
+    margin-right: 5px;
   }
 `;
 
