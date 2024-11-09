@@ -1,8 +1,10 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useQuery } from "react-query";
 import styled from "styled-components";
-import { getMovieDetail, IGetMoviesResult, IMovieDetail, makeImagePath } from "../api";
-import { useState } from "react";
+import { getMovie, makeImagePath } from "../api";
+import { useEffect, useState } from "react";
+import { IMovie, IMovieDetail } from "../interface/IMovie";
+import Loading from "./Loading";
 
 const movieWrapperVariants = {
   start: { opacity: 0, scale: 0.5 },
@@ -24,87 +26,79 @@ const movieVariants = {
   end: { opacity: 1, y: 0, scale: 1 }
 };
 
-export default function MovieCards({ movies }: { movies: IGetMoviesResult | undefined }) {
+export default function MovieCards({ movies }: { movies: IMovie[] | undefined }) {
   const [movieId, setMovieId] = useState<string | null>(null);
-  const { isLoading: movieLoading, data: movieDetail } = useQuery<IMovieDetail | null>(
+  const { isLoading: movieLoading, data: movieDetail } = useQuery<IMovieDetail>(
     ["movie", movieId],
-    () => getMovieDetail(movieId),
+    () => getMovie(movieId),
   );
-  const closeOverlay = () => {
-    setMovieId(null);
-  }
-  return (
-    <>
-      <Wrapper variants={movieWrapperVariants} initial="start" animate="end">
-        {movies?.results.map((movie) => (
-          <motion.div
-            layoutId={movie.id + ""}
-            key={movie.id}
-            variants={movieVariants}
-            onClick={() => setMovieId(movie.id + "")}
-          >
-            <PosterImg
-              whileHover={{ y: -20, scale: 1.1 }}
-              src={makeImagePath(movie.backdrop_path)}
-              alt={movie.title}
-            />
-            <h1>{movie.title}</h1>
-          </motion.div>
-        ))}
-        <AnimatePresence>
-          {movieId && (
-            <Overlay
-              onClick={closeOverlay}
-              layoutId={movieId}
-              initial={{ backgroundColor: "rgba(0, 0, 0, 0)" }}
-              animate={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
-              exit={{ backgroundColor: "rgba(0, 0, 0, 0)" }}>
-              {movieLoading ? (
-                <div>Loading...</div>
-              ) : (
-                movieDetail && (
-                  <Card>
-                    <CloseBtn onClick={closeOverlay} data-slot="icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                      <path clipRule="evenodd" fillRule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM8.28 7.22a.75.75 0 0 0-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 1 0 1.06 1.06L10 11.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L11.06 10l1.72-1.72a.75.75 0 0 0-1.06-1.06L10 8.94 8.28 7.22Z"></path>
-                    </CloseBtn>
-                    <ImgContainer>
-                      <MovieImg
-                        src={makeImagePath(movieDetail.poster_path)}
-                        alt={movieDetail.title}
-                      />
-                    </ImgContainer>
-                    <Content>
-                      <Title>{movieDetail.title}</Title>
-                      <Description>{movieDetail.overview}</Description>
-                      <MovieInfoGrid>
-                        <InfoItem>
-                          Budget: <span>${movieDetail.budget.toLocaleString()}</span>
-                        </InfoItem>
-                        <InfoItem>
-                          Revenue: <span>${movieDetail.revenue.toLocaleString()}</span>
-                        </InfoItem>
-                        <InfoItem>
-                          Runtime: <span>{movieDetail.runtime} minutes</span>
-                        </InfoItem>
-                        <InfoItem>
-                          Rating: <span>{movieDetail.vote_average.toFixed(1)}</span>
-                        </InfoItem>
-                        {movieDetail.homepage && (
-                          <InfoItem>
-                            <a href={movieDetail.homepage}>Homepage</a>
-                          </InfoItem>
-                        )}
-                      </MovieInfoGrid>
-                    </Content>
-                  </Card>
-                )
-              )}
-            </Overlay>
-          )}
-        </AnimatePresence>
-      </Wrapper>
-    </>
 
+  return (
+    <Wrapper variants={movieWrapperVariants} initial="start" animate="end">
+      {movies?.map((movie) => (
+        <motion.div
+          layoutId={movie.id + ""}
+          key={movie.id}
+          variants={movieVariants}
+          onClick={() => setMovieId(movie.id + "")}
+        >
+          <PosterImg
+            whileHover={{ y: -20, scale: 1.1 }}
+            src={makeImagePath(movie.poster_path)}
+            alt={movie.title}
+          />
+          <h1>{movie.title}</h1>
+        </motion.div>
+      ))}
+      <AnimatePresence>
+        {movieId && (
+          <Overlay layoutId={movieId} initial={{ backgroundColor: "rgba(0, 0, 0, 0)" }}
+            animate={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+            exit={{ backgroundColor: "rgba(0, 0, 0, 0)" }}>
+            {movieLoading ? (
+              <Loading />
+            ) : (
+              movieDetail && (
+                <Card>
+                  <CloseBtn onClick={() => setMovieId(null)} data-slot="icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path clipRule="evenodd" fillRule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM8.28 7.22a.75.75 0 0 0-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 1 0 1.06 1.06L10 11.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L11.06 10l1.72-1.72a.75.75 0 0 0-1.06-1.06L10 8.94 8.28 7.22Z"></path>
+                  </CloseBtn>
+                  <ImgContainer>
+                    <MovieImg
+                      src={makeImagePath(movieDetail.poster_path)}
+                      alt={movieDetail.title}
+                    />
+                  </ImgContainer>
+                  <Content>
+                    <Title>{movieDetail.title}</Title>
+                    <Description>{movieDetail.overview}</Description>
+                    <MovieInfoGrid>
+                      <InfoItem>
+                        Budget: <span>${movieDetail.budget.toLocaleString()}</span>
+                      </InfoItem>
+                      <InfoItem>
+                        Revenue: <span>${movieDetail.revenue.toLocaleString()}</span>
+                      </InfoItem>
+                      <InfoItem>
+                        Runtime: <span>{movieDetail.runtime} minutes</span>
+                      </InfoItem>
+                      <InfoItem>
+                        Rating: <span>{movieDetail.vote_average.toFixed(1)}</span>
+                      </InfoItem>
+                      {movieDetail.homepage && (
+                        <InfoItem>
+                          <a href={movieDetail.homepage}>Homepage</a>
+                        </InfoItem>
+                      )}
+                    </MovieInfoGrid>
+                  </Content>
+                </Card>
+              )
+            )}
+          </Overlay>
+        )}
+      </AnimatePresence>
+    </Wrapper>
   )
 }
 
