@@ -13,7 +13,7 @@ const MovieCards = memo(({ movies }: { movies: IMovie[] }) => {
 
   const closeModal = () => setMovieId(null);
   const filterMovies = searchKeyword !== "" ? movies?.filter(movie => movie.title.toUpperCase().includes(searchKeyword.toUpperCase())) : movies.slice(1);
-  const bannerMovie = filterMovies[0];
+  const bannerMovie = searchKeyword === "" ? movies[0] : filterMovies[0];
 
   useEffect(() => {
     if (movieId) {
