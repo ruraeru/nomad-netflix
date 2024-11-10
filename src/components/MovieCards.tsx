@@ -1,33 +1,13 @@
 import { motion } from "framer-motion";
 import styled from "styled-components";
 import { IMovie, makeImagePath } from "../api";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
 import { keywordState } from "../atom";
 import MovieCard from "./MovieCard";
-import Loading from "./Loading";
+import { movieVariants, movieWrapperVariants } from "../variants/MovieCardsVarinats";
 
-const movieWrapperVariants = {
-  start: { opacity: 0, scale: 0.5 },
-  end: {
-    opacity: 1,
-    scale: 1,
-    transition: {
-      type: "spring",
-      duration: 0.1,
-      bounce: 0.5,
-      delayChildren: 0.1,
-      staggerChildren: 0.1
-    }
-  }
-};
-
-const movieVariants = {
-  start: { opacity: 0, y: 10, scale: 0.1 },
-  end: { opacity: 1, y: 0, scale: 1 }
-};
-
-export default function MovieCards({ movies }: { movies: IMovie[] }) {
+const MovieCards = memo(({ movies }: { movies: IMovie[] }) => {
   const [movieId, setMovieId] = useState<string | null>(null);
   const searchKeyword = useRecoilValue(keywordState);
 
@@ -107,7 +87,7 @@ export default function MovieCards({ movies }: { movies: IMovie[] }) {
       </Wrapper>
     </>
   )
-}
+})
 
 const Banner = styled(motion.div) <{ $bgPhoto: string }>`
   width: 100%;
@@ -157,6 +137,14 @@ const MoreInfoBtn = styled(motion.button)`
   cursor: pointer;
   background-color: rgba(255, 255, 255, 0.5);
   border: none;
+  @media (max-width: 768px) {
+    width: 150px;
+    height: 50px;
+    font-size: 18px;
+    svg {
+      width: 20px;
+    }
+  }
 `;
 
 
@@ -187,3 +175,5 @@ const PosterImg = styled(motion.img)`
   border-radius: 15px;
   cursor: pointer;
 `;
+
+export default MovieCards;

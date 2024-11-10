@@ -4,10 +4,9 @@ import { getPopular } from "../api";
 import Loading from "../components/Loading";
 
 export default function Popular() {
-    const { isLoading, data: movies } = useQuery('popular', getPopular);
-    console.log(movies);
+    const { isLoading, data } = useQuery('popular', getPopular);
     if (isLoading) {
         return <Loading />
     }
-    return <MovieCards movies={movies} />
+    return <MovieCards movies={data} />
 }

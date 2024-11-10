@@ -94,9 +94,6 @@ const MovieCard = memo(({ closeModal, movieId }: MovieCardProps) => {
   );
 });
 
-MovieCard.displayName = "MovieCard";
-
-// 스타일 컴포넌트
 const Overlay = styled(motion.div)`
   position: fixed;
   inset: 0;

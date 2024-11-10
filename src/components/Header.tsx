@@ -1,71 +1,46 @@
-import { color, motion, useAnimation, useMotionValueEvent, useScroll } from "framer-motion";
+import { motion, useAnimation, useMotionValueEvent, useScroll } from "framer-motion";
 import { Link, useMatch } from "react-router-dom";
 import styled from "styled-components";
 import { useSetRecoilState } from "recoil";
 import { keywordState } from "../atom";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { iconVariants, inputVariants, logoVariants, navVariants } from "../variants/HeaderVariants";
 
 interface IForm {
     keyword: string;
 }
 
-
-const logoVariants = {
-    normal: {
-        rotateZ: 0,
-        scale: 1
-    },
-    active: {
-        rotateZ: 360,
-        scale: 1.2,
-        transition: {
-            repeat: Infinity
-        }
-    }
-}
-
 export default function Header() {
     const { register, handleSubmit, setValue } = useForm<IForm>();
-    const [searchOpen, setSearchOpen] = useState(false);
-
-    const setKeyword = useSetRecoilState(keywordState);
-    const onValid = (data: IForm) => {
-        setKeyword(data.keyword);
-        setValue("keyword", "");
-    }
-
-    const toggleSearch = () => {
-        if (searchOpen) {
-            inputAnimation.start({
-                scaleX: 0
-            })
-        }
-        else {
-            inputAnimation.start({
-                scaleX: 1
-            })
-        }
-        setSearchOpen(prev => !prev);
-    }
 
     const popularMatch = useMatch("/");
     const soonMatch = useMatch("/coming-soon");
     const nowMatch = useMatch("/now-playing");
+
     const navAnimation = useAnimation();
     const inputAnimation = useAnimation();
+    const iconAnimation = useAnimation();
     const { scrollY } = useScroll();
 
     useMotionValueEvent(scrollY, "change", () => {
         if (scrollY.get() > 60) {
             navAnimation.start("scroll")
             inputAnimation.start("scroll");
+            iconAnimation.start("scroll");
+
         }
         else {
             navAnimation.start("top")
             inputAnimation.start("top");
+            iconAnimation.start("top");
         }
     });
+
+    const setKeyword = useSetRecoilState(keywordState);
+    const onValid = (data: IForm) => {
+        setKeyword(data.keyword);
+        setValue("keyword", "");
+    }
 
     return (
         <Nav
@@ -104,10 +79,8 @@ export default function Header() {
             <Col>
                 <Search onSubmit={handleSubmit(onValid)}>
                     <motion.svg
-                        onClick={toggleSearch}
                         variants={iconVariants}
-                        animate={inputAnimation}
-                        style={{ x: -185 }}
+                        animate={iconAnimation}
                         fill="currentColor"
                         viewBox="0 0 20 20"
                         xmlns="http://www.w3.org/2000/svg"
@@ -197,52 +170,21 @@ const Circle = styled(motion.span)`
   background-color: red;
 `;
 
-const navVariants = {
-    top: {
-        backgroundColor: "rgba(0, 0, 0, 0)",
-        color: "rgba(255,255,255,1)"
-    },
-    scroll: {
-        backgroundColor: "rgba(255, 255, 255, 1)",
-        color: "rgba(0,0,0,1)"
-    }
-}
-
-const inputVariants = {
-    top: {
-        backgroundColor: "rgba(0, 0, 0, 0)",
-        color: "rgba(255,255,255,1)",
-        border: "3px solid rgba(255, 255, 255, 1)"
-    },
-    scroll: {
-        backgroundColor: "rgba(255, 255, 255, 1)",
-        color: "rgba(0,0,0,1)",
-        border: "3px solid rgba(0, 0, 0, 1)"
-    }
-}
-
-const iconVariants = {
-    top: {
-        color: "rgba(255,255,255,1)",
-    },
-    scroll: {
-        color: "rgba(0,0,0,1)",
-    }
-}
-
 const Search = styled.form`
     display: flex;
     align-items: center;
     color: white;
     position: relative;
     margin-right: 15px;
+    position: relative;
     svg {
         height: 25px;
+        position: absolute;
+        right: 185px;
     }
 `;
 
 const Input = styled(motion.input)`
-    transform-origin: right center;
     position: absolute;
     right: 0;
     padding: 5px 10px;
