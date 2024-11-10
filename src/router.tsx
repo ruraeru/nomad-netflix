@@ -6,11 +6,11 @@ import NowPlaying from './pages/Nowplaying';
 
 export const router = createBrowserRouter([
     {
-        path: '/nomad-nextflix',
+        path: '/',
         element: <App />,
         children: [
             {
-                path: '/nomad-nextflix',
+                path: "/",
                 element: <Popular />
             },
             {
