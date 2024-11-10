@@ -1,10 +1,11 @@
 import { motion } from "framer-motion";
 import styled from "styled-components";
 import { IMovie, makeImagePath } from "../api";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
 import { keywordState } from "../atom";
 import MovieCard from "./MovieCard";
+import Loading from "./Loading";
 
 const movieWrapperVariants = {
   start: { opacity: 0, scale: 0.5 },
@@ -31,14 +32,55 @@ export default function MovieCards({ movies }: { movies: IMovie[] }) {
   const searchKeyword = useRecoilValue(keywordState);
 
   const closeModal = () => setMovieId(null);
-  const filterMovies = searchKeyword !== "" ? movies?.filter(movie => movie.title.toUpperCase().includes(searchKeyword.toUpperCase())) : movies;
+  const filterMovies = searchKeyword !== "" ? movies?.filter(movie => movie.title.toUpperCase().includes(searchKeyword.toUpperCase())) : movies.slice(1);
+  const bannerMovie = filterMovies[0];
+
+  useEffect(() => {
+    if (movieId) {
+      document.body.style.overflow = "hidden";
+    }
+    else {
+      document.body.style.overflow = "unset";
+    }
+
+    return () => {
+      document.body.style.overflow = "unset";
+    }
+  }, [movieId]);
+
+  if (filterMovies.length === 0) {
+    return (
+      <div style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
+        fontSize: "64px"
+      }}>
+        검색 결과가 없습니다!
+      </div>
+    )
+  }
 
   return (
     <>
-      <Banner $bgPhoto={makeImagePath(movies[10].backdrop_path)}>
-        <Title>{movies[0].title}</Title>
-        <Overview>{movies[0].overview.slice(0, 150)}...</Overview>
-        <MoreInfoBtn onClick={() => setMovieId(movies[10].id + "")}>
+      <Banner
+        layoutId={bannerMovie.backdrop_path}
+        $bgPhoto={makeImagePath(bannerMovie.backdrop_path)}
+      >
+        <Title>{bannerMovie.title}</Title>
+        <Overview>{bannerMovie.overview.slice(0, 150)}...</Overview>
+        <MoreInfoBtn
+          whileHover={{
+            scale: 1.1,
+            backgroundColor: "rgba(255, 255, 255, 1)"
+          }}
+          transition={{
+            type: "tween",
+            duration: 0.5
+          }}
+          onClick={() => setMovieId(bannerMovie.id + "")}
+        >
           <svg data-slot="icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <path d="M6.3 2.84A1.5 1.5 0 0 0 4 4.11v11.78a1.5 1.5 0 0 0 2.3 1.27l9.344-5.891a1.5 1.5 0 0 0 0-2.538L6.3 2.841Z"></path>
           </svg>
@@ -67,7 +109,7 @@ export default function MovieCards({ movies }: { movies: IMovie[] }) {
   )
 }
 
-const Banner = styled.div<{ $bgPhoto: string }>`
+const Banner = styled(motion.div) <{ $bgPhoto: string }>`
   width: 100%;
   height: 70vh;
   display: flex;
@@ -98,11 +140,12 @@ const Overview = styled.p`
   }
 `;
 
-const MoreInfoBtn = styled.button`
+const MoreInfoBtn = styled(motion.button)`
   width: 250px;
   height: 80px;
   border-radius: 125px;
   font-size: 32px;
+  margin-top: 5px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -111,6 +154,9 @@ const MoreInfoBtn = styled.button`
     width: 40px;
     margin-right: 5px;
   }
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.5);
+  border: none;
 `;
 
 
