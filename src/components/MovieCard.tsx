@@ -12,8 +12,11 @@ interface MovieCardProps {
 
 const MovieCard = memo(({ closeModal, movieId }: MovieCardProps) => {
   const { isLoading, data: movieDetail } = useQuery<IMovieDetail>(
-    ["movie", movieId],
-    () => getMovie(movieId),
+    {
+      queryKey: ["movie", movieId],
+      queryFn: () => getMovie(movieId),
+      enabled: movieId !== null && true
+    }
   );
 
   if (!movieId) return null;
